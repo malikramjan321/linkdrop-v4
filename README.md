@@ -1,25 +1,15 @@
-# LinkDrop V4
+# LinkDrop V5
 
-V4 separates the responsive frontend from the media-processing backend.
+Multi-source public-media downloader architecture.
 
-## 1. Backend
-Deploy `backend/` on a Docker-compatible host. It needs Python and FFmpeg.
+- `frontend/`: static responsive frontend (Netlify)
+- `backend/`: FastAPI + direct-file probe + yt-dlp + FFmpeg (Render/Docker)
+- Direct public media is detected before extractor fallback.
+- Extractor failures return structured codes such as `SOURCE_AUTH_REQUIRED`, `UNSUPPORTED_SOURCE`, and `DRM_OR_PROTECTED`.
+- No cookies, login automation, DRM bypass, or private-content bypass is included.
 
-Environment variables:
-- `APP_ORIGINS=https://YOUR-NETLIFY-SITE.netlify.app`
-- `FILE_TTL_SECONDS=1800`
-- `MAX_VIDEO_HEIGHT=1080`
+## Upgrade existing Render service
+Replace the repository contents with V5 and push to `main`. Render should auto-deploy because the backend root remains `backend`.
 
-Test: `GET /health`
-
-## 2. Frontend
-Open `frontend/config.js` and replace `http://localhost:8080` with the deployed backend HTTPS URL. Then deploy the `frontend/` folder to Netlify.
-
-## Local test
-Backend:
-`docker build -t linkdrop-api backend && docker run --rm -p 8080:8080 -e APP_ORIGINS=http://localhost:5500 linkdrop-api`
-
-Serve frontend with any static server on port 5500.
-
-## Scope
-This build intentionally has no cookie import, account-login automation, private-content access, DRM bypass, or proxy evasion. Use it only for media you own or have permission to download. Some platforms can change their delivery systems and may stop working until yt-dlp is updated.
+## Frontend
+Set `frontend/config.js` to your backend URL, e.g. `window.LINKDROP_API="https://linkdrop-v4.onrender.com";`, then deploy `frontend/` to Netlify.
