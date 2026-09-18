@@ -12,7 +12,13 @@ STORE=Path(os.getenv('DOWNLOAD_DIR','/tmp/linkdrop')); STORE.mkdir(parents=True,
 TTL=int(os.getenv('FILE_TTL_SECONDS','1800'))
 MAX_HEIGHT=int(os.getenv('MAX_VIDEO_HEIGHT','1080'))
 app=FastAPI(title='LinkDrop V5 API',version='5.0.0')
-app.add_middleware(CORSMiddleware,allow_origins=APP_ORIGINS,allow_credentials=False,allow_methods=['GET','POST'],allow_headers=['*'])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 JOBS={}; LOCK=threading.Lock()
 
 class AnalyzeIn(BaseModel): url: HttpUrl
